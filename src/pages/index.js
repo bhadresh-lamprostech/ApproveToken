@@ -11,7 +11,7 @@ const Index = () => {
 
   const approveERC20 = async () => {
     setLoading(true);
-    setStatusMessage("Approving...");
+    setStatusMessage("Approving...✋");
 
     const { ethereum } = window;
     if (ethereum) {
@@ -26,11 +26,11 @@ const Index = () => {
         const tx = await contract.approve(recipientAddress, amountToApprove);
         await tx.wait();
         setLoading(false);
-        setStatusMessage("Tokens approved successfully!");
+        setStatusMessage("Tokens approved successfully!🤟🙌");
         console.log("Tokens approved successfully!");
       } catch (error) {
         setLoading(false);
-        setStatusMessage("Error approving tokens");
+        setStatusMessage("Error approving tokens🔴");
         console.error("Error approving tokens:", error);
       }
     } else {
@@ -48,7 +48,7 @@ const Index = () => {
     <div className="container mx-auto px-4 py-8 bg-black text-white">
       <h2 className="text-2xl font-bold mb-4">Token Approval</h2>
       <div className="mb-4">
-        <label className="block font-semibold text-white">Token Address:</label>
+        <label className="block font-semibold text-white">Token Address 🪙:</label>
         <input
           className="w-full border border-gray-400 rounded px-4 py-2 bg-gray-800 text-white"
           type="text"
@@ -59,7 +59,7 @@ const Index = () => {
       </div>
       <div className="mb-4">
         <label className="block font-semibold text-white">
-          Amount to Approve:
+          Amount to Approve 💰:
         </label>
         <input
           className="w-full border border-gray-400 rounded px-4 py-2 bg-gray-800 text-white"
@@ -71,7 +71,7 @@ const Index = () => {
       </div>
       <div className="mb-4">
         <label className="block font-semibold text-white">
-          Address To Approve:
+          Address To Approve🪪 📝:
         </label>
         <input
           className="w-full border border-gray-400 rounded px-4 py-2 bg-gray-800 text-white"
@@ -86,7 +86,7 @@ const Index = () => {
         onClick={approveERC20}
         disabled={loading}
       >
-        {loading ? "Approving..." : "Approve Tokens"}
+        {loading ? "Approving...✋" : "Approve Tokens"}
       </button>
       {statusMessage && <div className="mt-2">{statusMessage}</div>}
     </div>
