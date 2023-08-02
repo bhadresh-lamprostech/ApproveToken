@@ -1,13 +1,29 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { ethers } from "ethers";
 import ERC20 from "../../artifacts/contracts/ERC20.sol/ERC20.json"; // Replace with the actual path to your ERC20 ABI
 
-const Index = () => {
+const index = () => {
   const [contractAddress, setContractAddress] = useState("");
   const [amountToApprove, setAmountToApprove] = useState("");
   const [recipientAddress, setRecipientAddress] = useState("");
   const [loading, setLoading] = useState(false);
   const [statusMessage, setStatusMessage] = useState("");
+  const [isMetamaskConnected, setIsMetamaskConnected] = useState(false);
+
+  // Function to check if Metamask is connected
+  const checkMetamaskConnection = async () => {
+    const { ethereum } = window;
+    if (ethereum && ethereum.selectedAddress) {
+      setIsMetamaskConnected(true);
+    } else {
+      setIsMetamaskConnected(false);
+    }
+  };
+
+  // useEffect to check Metamask connection on component mount
+  useEffect(() => {
+    checkMetamaskConnection();
+  }, []);
 
   const approveERC20 = async () => {
     setLoading(true);
@@ -44,9 +60,30 @@ const Index = () => {
     }
   };
 
+  const connectToMetamask = async () => {
+    const { ethereum } = window;
+    if (ethereum) {
+      try {
+        await ethereum.request({ method: "eth_requestAccounts" });
+        setIsMetamaskConnected(true);
+      } catch (error) {
+        setIsMetamaskConnected(false);
+        console.error("Error connecting to Metamask:", error);
+      }
+    } else {
+      setIsMetamaskConnected(false);
+      console.error("Ethereum provider not available. Please install Metamask.");
+    }
+  };
+
   return (
     <div className="container mx-auto px-4 py-8 bg-black text-white">
       <h2 className="text-2xl font-bold mb-4">Token Approval</h2>
+      {isMetamaskConnected ? (
+        <div className="mb-2 text-green-500">Connected to Metamask ✅</div>
+      ) : (
+        <div className="mb-2 text-red-500">Metamask is not connected ❌</div>
+      )}
       <div className="mb-4">
         <label className="block font-semibold text-white">Token Address 🪙:</label>
         <input
@@ -82,15 +119,17 @@ const Index = () => {
         />
       </div>
       <button
-        className="bg-blue-500 text-black font-semibold py-2 px-4 rounded"
-        onClick={approveERC20}
+        className={`${
+          isMetamaskConnected ? "bg-green-500" : "bg-blue-500"
+        } text-black font-semibold py-2 px-4 rounded`}
+        onClick={isMetamaskConnected ? approveERC20 : connectToMetamask}
         disabled={loading}
       >
-        {loading ? "Approving...✋" : "Approve Tokens"}
+        {isMetamaskConnected ? "Approve Tokens" : "Connect to Metamask"}
       </button>
       {statusMessage && <div className="mt-2">{statusMessage}</div>}
     </div>
   );
 };
 
-export default Index;
+export default index;
